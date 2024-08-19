@@ -46,8 +46,6 @@ export class GameManager extends Component {
     }
 
     generateRoad() {
-        console.log("generateRoad");
-
         this.node.removeAllChildren();
 
         this._road = [];

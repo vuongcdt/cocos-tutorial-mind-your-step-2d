@@ -1,14 +1,21 @@
-import { _decorator, Animation, Component, EventMouse, Input, input, Vec3 } from 'cc';
+import { _decorator, Animation, Component, EventMouse, EventTouch, Input, input, Vec3 } from 'cc';
 
 const { ccclass, property } = _decorator;
 export const BLOCK_SIZE = 40;
 
 @ccclass('PlayerController')
 export class PlayerController extends Component {
-
-
     @property(Animation)
     BodyAnim: Animation = null;
+
+    @property({ type: Node })
+    public leftTouch: Node | null = null;
+
+    @property({ type: Node })
+    public rightTouch: Node | null = null;
+
+    // @property({ type: Node })
+    // public canvas: Node | null = null;
 
     private _startJump: boolean = false;
     private _jumpStep: number = 0;
@@ -56,7 +63,7 @@ export class PlayerController extends Component {
         if (this._startJump) {
             return;
         }
-        
+
         const clipName = step == 1 ? 'oneStep' : 'twoStep';
         const state = this.BodyAnim.getState(clipName);
         this._jumpTime = state.duration;
@@ -110,6 +117,13 @@ export class PlayerController extends Component {
     //     }
     // }
 
+
+    reset() {
+        this._curMoveIndex = 0;
+        this.node.getPosition(this._curPos);
+        this._targetPos.set(0, 0, 0);
+    }
+
     setInputActive(active: boolean) {
         if (active) {
             input.on(Input.EventType.MOUSE_UP, this.onMouseUp, this);
@@ -118,11 +132,29 @@ export class PlayerController extends Component {
         }
     }
 
-    reset() {
-        this._curMoveIndex = 0;
-        this.node.getPosition(this._curPos);
-        this._targetPos.set(0, 0, 0);
+    // setInputActive(active: boolean) {
+    //     if (active) {
+    //         //for pc
+    //         input.on(Input.EventType.MOUSE_UP, this.onMouseUp, this);
+    //         //for mobile
+    //         this.leftTouch.on(Input.EventType.TOUCH_START, this.onTouchStart, this);
+    //         this.rightTouch.on(Input.EventType.TOUCH_START, this.onTouchStart, this);
+    //     } else { 
+    //         //for pc
+    //         input.off(Input.EventType.MOUSE_UP, this.onMouseUp, this);
+    //         //for mobile
+    //         this.leftTouch.off(Input.EventType.TOUCH_START, this.onTouchStart, this);
+    //         this.rightTouch.off(Input.EventType.TOUCH_START, this.onTouchStart, this);
+    //     }
+    // }
+
+    onTouchStart(event: EventTouch) {
+        const target = event.target as Node;
+        if (target?.nodeName == 'LeftTouch') {
+            this.jumpByStep(1);
+        } else {
+            this.jumpByStep(2);
+        }
     }
+
 }
-
-

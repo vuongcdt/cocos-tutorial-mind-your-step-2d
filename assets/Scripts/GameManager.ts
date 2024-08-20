@@ -36,6 +36,7 @@ export class GameManager extends Component {
     @property({ type: Label })
     public stepsLabel: Label | null = null;
 
+
     start() {
         this.setCurState(GameState.GS_INIT);
         this.playerCtrl?.node.on('JumpEnd', this.onPlayerJumpEnd, this);
@@ -155,6 +156,7 @@ export class GameManager extends Component {
             this.setCurState(GameState.GS_INIT);
         }
     }
+    
 }
 
 
